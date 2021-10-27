@@ -1,3 +1,4 @@
+const Schema = require('../schema');
 
 let publicFunction = {
 
