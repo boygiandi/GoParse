@@ -3,12 +3,10 @@ const roles = require('./roles');
 const helper = require('../helper');
 
 let classRole = {}
-fs.readdir(__dirname, (err, files) => {
-	if ( err ) return false;
-	files.filter(f => f.split('.').shift()==='schema' && f.split('.').pop()==='json').forEach(file => {
-		let className = file.split('.')[1]
-		classRole[className] = require('./'+file)
-	})
+let files = fs.readdirSync(__dirname);
+files.filter(f => f.split('.').shift()==='schema' && f.split('.').pop()==='json').forEach(file => {
+	let className = file.split('.')[1]
+	classRole[className] = require('./'+file)
 })
 
 // protectedFields, indexes ???
@@ -27,24 +25,24 @@ let publicFunction = {
 			return role.save(null, { useMasterKey: true })
 		}) )
 	},
-	updateClassLevelPermissions() {
+	async updateClassLevelPermissions() {
 		let promises = [];
-		Object.keys(classRole).forEach(className => {
-			promises.push( helper.apiRequest({
+		for ( let className of Object.keys(classRole) ) {
+			let response = await helper.apiRequest('schemas/'+className, {
 				method: 'PUT',
 				body: {
 					classLevelPermissions: classRole[className].classLevelPermissions
 				}
-			}) );
-		})
-		return Promise.all(promises)
+			});
+		}
+		return true
 	}
 }
 
 Object.keys(classRole).forEach(className => {
 	var actions = Object.keys(classRole[className].accessControlList);
 
-	Parse.Cloud.beforeSave(Parse[className], async function(request) {
+	Parse.Cloud.beforeSave(className, async function(request) {
 		async function getParticipant(name) {
 			switch (name) {
 				case 'me':
@@ -58,10 +56,17 @@ Object.keys(classRole).forEach(className => {
 					break;
 			}
 		}
-
 		let acl = new Parse.ACL();
 		for ( let act of actions ) {
-			let participants = classRole[className][act].split(',').map(name => name.trim())
+			let permConfig = classRole[className].accessControlList[act]
+			let participants = [];
+			if ( typeof permConfig=="string" ) participants = permConfig;
+			else if ( typeof permConfig == "object" && permConfig.hasOwnProperty("condition") ) {
+				let condition = permConfig.condition.replace(/attributes\./gi, 'request.object.attributes.');
+				participants = eval(condition) ? permConfig["true"] : permConfig["false"];
+			}
+			participants = participants.split(',').map(name => name.trim())
+			
 			for ( let p of participants ) {
 				if ( p=="public" ) {
 					acl[`setPublic${act}Access`](true)
