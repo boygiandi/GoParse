@@ -30,24 +30,24 @@ let modules = [
 	}
 ];
 
-modules.forEach(mdl => {
+for ( let mdl of modules ) {
 	fs.readdir(__dirname+'/'+mdl.name, (err, files) => {
 		if ( err ) return false;
-		files.forEach(file => {
+		for ( let file of files ) {
 			if ( file.split('.').pop()!='js' ) return;
 			let fncs = require(`./${mdl.name}/${file}`)
-			fncs.cloudFunction.forEach(fnc => {
-				let options = mdl.options || {};
+			for ( let fnc of fncs.cloudFunction ) {
+				let options = Object.assign({}, mdl.options);
 				if ( fnc.fields ) options.fields = fnc.fields;
 				Parse.Cloud.define(fnc.name, async function(req) {
 					if ( !mdl.validate || await mdl.validate(req, fnc.name) )
 						return fnc.run(req)
 					else return {error: "invalid_request"}
 				}, options)
-			})
-		});
+			}
+		};
 	})
-})
+}
 
 require('./schema')
 
