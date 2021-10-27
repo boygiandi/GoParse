@@ -5,7 +5,7 @@
 			"role:marketing": true
 		},
 		"get": {
-		  "*": true
+			"*": true
 		},
 		"create": {
 			"role:admin": true,
