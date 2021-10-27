@@ -7,7 +7,7 @@ let cloudFunction = [
 	{
 		name: 'test:admin',
 		async run(req) {
-		    return {message: `hello admin ${req.user.id}`};
+			return {message: `hello admin ${req.user.id}`};
 		}
 	}
 ]

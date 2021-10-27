@@ -2,17 +2,17 @@
 	"classLevelPermissions": {
 		"find": {
 			"*": true
-	    },
-	    "get": {
+		},
+		"get": {
 			"*": true
-	    },
-	    "create": {
-	    	"role:admin": true
-	    },
-	    "update": {
-	    	"role:admin": true
-	    },
-	    "delete": { "role:admin": true }
+		},
+		"create": {
+			"role:admin": true
+		},
+		"update": {
+			"role:admin": true
+		},
+		"delete": { "role:admin": true }
 	},
 	"accessControlList": {
 		"Read": "public",

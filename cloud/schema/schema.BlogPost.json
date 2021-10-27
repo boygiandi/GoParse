@@ -3,22 +3,22 @@
 		"find": {
 			"role:admin": true,
 			"role:marketing": true
-	    },
-	    "get": {
-	      "*": true
-	    },
-	    "create": {
+		},
+		"get": {
+		  "*": true
+		},
+		"create": {
 			"role:admin": true,
 			"role:marketing": true
-	    },
-	    "update": {
+		},
+		"update": {
 			"role:admin": true,
 			"role:marketing": true
-	    },
-	    "delete": {
+		},
+		"delete": {
 			"role:admin": true,
 			"role:marketing": true
-	    }
+		}
 	},
 	"accessControlList": {
 		"Read": "public",
