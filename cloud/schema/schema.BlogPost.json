@@ -1,0 +1,27 @@
+{
+	"classLevelPermissions": {
+		"find": {
+			"role:admin": true,
+			"role:marketing": true
+	    },
+	    "get": {
+	      "*": true
+	    },
+	    "create": {
+			"role:admin": true,
+			"role:marketing": true
+	    },
+	    "update": {
+			"role:admin": true,
+			"role:marketing": true
+	    },
+	    "delete": {
+			"role:admin": true,
+			"role:marketing": true
+	    }
+	},
+	"accessControlList": {
+		"Read": "public",
+		"Write": "admin, marketing"
+	}
+}
