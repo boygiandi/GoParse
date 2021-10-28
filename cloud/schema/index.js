@@ -39,8 +39,9 @@ let publicFunction = {
 	}
 }
 
-Object.keys(classRole).forEach(className => {
+for ( let className of Object.keys(classRole) ) {
 	var actions = Object.keys(classRole[className].accessControlList);
+	if ( actions.length==0 ) continue;
 
 	Parse.Cloud.beforeSave(className, async function(request) {
 		async function getParticipant(name) {
@@ -79,7 +80,7 @@ Object.keys(classRole).forEach(className => {
 		}
 		request.object.setACL(acl);
 	})
-})
+}
 
 module.exports = {
 	publicFunction
