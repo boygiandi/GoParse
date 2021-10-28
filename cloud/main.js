@@ -50,4 +50,4 @@ for ( let mdl of modules ) {
 }
 
 require('./schema')
-
+require('./triggers')
