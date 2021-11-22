@@ -67,15 +67,14 @@ for ( let className of Object.keys(classRole) ) {
 				participants = eval(condition) ? permConfig["true"] : permConfig["false"];
 			}
 			participants = participants.split(',').map(name => name.trim())
-			
+			let allowPublic = participants.find(p => p=="public")
+			acl[`setPublic${act}Access`](!!allowPublic)
+			participants = participants.filter(p => p!="public")
+
 			for ( let p of participants ) {
-				if ( p=="public" ) {
-					acl[`setPublic${act}Access`](true)
-				} else {
-					let participant = await getParticipant(p)
-					if ( participant )
-						acl[`setRole${act}Access`](participant, true)
-				}
+				let participant = await getParticipant(p)
+				if ( participant )
+					acl[`setRole${act}Access`](participant, true)
 			}
 		}
 		request.object.setACL(acl);
