@@ -43,7 +43,7 @@ for ( let className of Object.keys(classRole) ) {
 	var actions = Object.keys(classRole[className].accessControlList);
 	if ( actions.length==0 ) continue;
 
-	Parse.Cloud.beforeSave(className, async function(request) {
+	Parse.Cloud.triggers.add("beforeSave", className, async function(request) {
 		async function getParticipant(name) {
 			switch (name) {
 				case 'me':
