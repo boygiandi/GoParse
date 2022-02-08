@@ -39,48 +39,72 @@ let publicFunction = {
 	}
 }
 
-for ( let className of Object.keys(classRole) ) {
+for (let className of Object.keys(classRole)) {
 	var actions = Object.keys(classRole[className].accessControlList);
-	if ( actions.length==0 ) continue;
+	if (actions.length == 0) continue;
 
-	Parse.Cloud.triggers.add("beforeSave", className, async function(request) {
+	Parse.Cloud.triggers.add("beforeSave", className, async function (request) {
 		async function getParticipant(name) {
 			switch (name) {
-				case 'me':
-					if ( className=="User" ) return "";
-					return request.object.attributes.user ? request.object.attributes.user.id : Parse.User.current();
+				case "me":
+					if (className == "_User") return request.object.id;
+					return request.object.attributes.createdBy
+						? request.object.attributes.createdBy.id
+						: Parse.User.current();
+					break;
+				case "join":
+					return request.object.attributes.joinBy
+						? request.object.attributes.joinBy.id
+						: "";
 					break;
 				default:
-					let query = new Parse.Query(Parse.Role);
-					query.equalTo("name", name);
-					return query.first({ useMasterKey: true });
+					if ( name.indexOf("attributes.")===0 ) {
+						return request.object.attributes[name.replace("attributes.", "")];
+					} else {
+						let query = new Parse.Query(Parse.Role);
+						query.equalTo("name", name);
+						return query.first({ useMasterKey: true });
+					}
 					break;
 			}
 		}
 		let acl = new Parse.ACL();
-		for ( let act of actions ) {
-			let permConfig = classRole[className].accessControlList[act]
+		for (let act of actions) {
+			let permConfig = classRole[className].accessControlList[act];
 			let participants = [];
-			if ( typeof permConfig=="string" ) participants = permConfig;
-			else if ( typeof permConfig == "object" && permConfig.hasOwnProperty("condition") ) {
-				let condition = permConfig.condition.replace(/attributes\./gi, 'request.object.attributes.');
-				participants = eval(condition) ? permConfig["true"] : permConfig["false"];
+			if (typeof permConfig == "string") participants = permConfig;
+			else if (
+				typeof permConfig == "object" &&
+				permConfig.hasOwnProperty("condition")
+			) {
+				let condition = permConfig.condition.replace(
+					/attributes\./gi,
+					"request.object.attributes."
+				);
+				participants = eval(condition)
+					? permConfig["true"]
+					: permConfig["false"];
 			}
-			participants = participants.split(',').map(name => name.trim())
-			
-			acl[`setPublic${act}Access`](false)
-			for ( let p of participants ) {
-				if ( p=="public" ) {
-					acl[`setPublic${act}Access`](true)
+			participants = participants.split(",").map((name) => name.trim());
+			acl[`setPublic${act}Access`](false);
+			for (let p of participants) {
+				if (p == "public") {
+					acl[`setPublic${act}Access`](true);
 				} else {
-					let participant = await getParticipant(p)
-					if ( participant )
-						acl[`setRole${act}Access`](participant, true)
+					let participant = await getParticipant(p);
+					if (participant)
+						if (p === "me" || p === "join") {
+							acl[`set${act}Access`](participant, true);
+						} else if ( participant.className=="_Role" ) {
+							acl[`setRole${act}Access`](participant, true);
+						} else if ( participant.className=="_User" ) {
+							acl[`set${act}Access`](participant, true);
+						}
 				}
 			}
 		}
 		request.object.setACL(acl);
-	})
+	});
 }
 
 module.exports = {

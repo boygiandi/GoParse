@@ -5,21 +5,18 @@
 			"role:customer_support": true
 		},
 		"get": {
-			"requiresAuthentication": true,
-			"role:admin": true,
-			"role:customer_support": true
+			"requiresAuthentication": true
 		},
 		"create": {
-			"role:admin": true
+			"*": true
 		},
 		"update": {
-			"role:admin": true,
-			"role:customer_support": true
+			"requiresAuthentication": true
 		},
 		"delete": { "role:admin": true }
 	},
 	"accessControlList": {
 		"Read": "me, admin, customer_support",
-		"Write": "me, admin"
+		"Write": "public"
 	}
 }
