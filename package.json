@@ -1,0 +1,28 @@
+{
+    "private": true,
+    "name": "my-app",
+    "version": "1.0.0",
+    "description": "npm init template for bootstrapping an empty Colyseus project",
+    "main": "index.js",
+    "scripts": {
+        "start": "node index.js",
+        "init": "node install.js",
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "author": "",
+    "license": "UNLICENSED",
+    "bugs": {
+        "url": "https://github.com/colyseus/create-colyseus/issues"
+    },
+    "homepage": "https://github.com/colyseus/create-colyseus#readme",
+    "devDependencies": {},
+    "dependencies": {
+        "body-parser": "^1.19.0",
+        "cors": "^2.8.5",
+        "dotenv": "^10.0.0",
+        "express": "^4.16.4",
+        "parse": "^3.2.0",
+        "parse-server": "^4.5.0",
+        "parse-server-simple-mailgun-adapter": "^1.0.1"
+    }
+}

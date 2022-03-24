@@ -1,1 +1,5 @@
 .parse.*
+node_modules/
+*.pdf
+logs
+package-lock.json
