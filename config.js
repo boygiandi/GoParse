@@ -1,9 +1,9 @@
 require('dotenv').config()
 
 const HTTP_PORT = 80;
-const MONGO_URI = 'mongodb://luchwme:g6PKZjeLFi14wGAh@cluster0.vjnmw.mongodb.net/test?authSource=admin';
+const MONGO_URI = '';
 const PUBLIC_DOMAIN = process.env.PUBLIC_DOMAIN || ''; // 
-const REDIS_URI = process.env.REDIS_URI || 'redis://:BFw5QeA2lezA9AEeB6f03tsYtVKujzop@redis-14804.c294.ap-northeast-1-2.ec2.cloud.redislabs.com:14804';
+const REDIS_URI = process.env.REDIS_URI || '';
 
 module.exports = {
     port: {
